@@ -1,0 +1,5 @@
+edman==2022.3.30
+jmespath==1.0.0
+pymongo==4.0.2
+python-dateutil==2.8.2
+six==1.16.0
