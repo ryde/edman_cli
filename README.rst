@@ -11,6 +11,7 @@ Requirement
 -   pymongo
 -   python-dateutil
 -   jmespath
+-   edman
 
 
 Scripts Usage
