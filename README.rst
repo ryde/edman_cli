@@ -1,9 +1,5 @@
 edman_cli
-=====
-
-
-|  EDMAN_CLI
-=====
+=========
 
 |py_version|
 
@@ -24,9 +20,10 @@ Scripts Usage
 |  ◯スクリプトで使用するクエリについて
 |
 |  検索用クエリ
-|    検索の際はpymongoのフィルタ形式で指定します
-|    クエリ形式は "{pymongoでのフィルタ条件}"
-|      参照:  http://api.mongodb.com/python/current/api/pymongo/collection.html#pymongo.collection.Collection.find
+|    検索の際はMongoDB(pymongo)のフィルタ形式で指定します
+|    クエリ形式は "{フィルタ条件}"
+|      MongoDB参照:  https://www.mongodb.com/docs/manual/reference/method/db.collection.find/
+|      pymongoのfind参照:  https://pymongo.readthedocs.io/en/stable/api/pymongo/collection.html
 |
 |  階層指定クエリ
 |    emb(Embedded)形式でデータが入っている場合は下記のようなクエリで指定します
