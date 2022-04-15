@@ -6,7 +6,7 @@ import getpass
 import configparser
 from pathlib import Path
 from collections import OrderedDict
-from typing import Tuple, Iterator, Union
+from typing import Iterator, Union
 from pymongo import MongoClient, errors
 
 
@@ -22,7 +22,7 @@ class Action:
     default_ini_dir = 'ini'
 
     @staticmethod
-    def file_gen(files: Tuple[Path]) -> Union[Iterator[dict], Iterator[str]]:
+    def file_gen(files: tuple[Path]) -> Union[Iterator[dict], Iterator[str]]:
         """
         ファイルタプルからデータを取り出すジェネレータ
         XMLならstr、jsonなら辞書を返す
@@ -296,7 +296,7 @@ class Action:
                 sys.exit('Delete user failed. Delete user in Mongo shell.')
 
     @staticmethod
-    def is_duplicate_filename(ini_dir: Path) -> Tuple[bool, Union[str, None]]:
+    def is_duplicate_filename(ini_dir: Path) -> tuple[bool, Union[str, None]]:
         """
         ini_dirのパスに指定のファイルが存在していれば重複のフラグ、
         及びfilename[+_number].iniを出力
