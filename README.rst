@@ -79,7 +79,7 @@ Install
 
 pip install::
 
- pip install edman
+ pip install edman_cli
 
 Licence
 -------
