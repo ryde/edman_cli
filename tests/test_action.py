@@ -194,15 +194,27 @@ class TestAction(TestCase):
             # ファイルの中身があっているかテスト
             a = configparser.ConfigParser()
             a.read(dbfile_path)
-            actual_db = dict([i for i in a['DB'].items()])
+
+            actual_db = {}
+            for k, v in a['DB'].items():
+                actual_db.update({k: json.loads(v) if k == 'options' else v})
+            #     if k == 'options':
+            #         print(k,v)
+            #         s = json.loads(v)
+            #     else:
+            #         s = v
+            #     actual_db.update({k:s})
+
+
+            # actual_db = dict([i for i in a['DB'].items()])
 
             expected_db = {
                 'port': '27017',
                 'host': '127.0.0.1',
-                'database': 'userdb',
-                'auth_database': 'userdb',
                 'user': 'username',
-                'password': 'userpwd'}
+                'password': 'userpwd',
+                'database': 'userdb',
+                'options': ["authSource=userdb"]}
 
             self.assertDictEqual(actual_db, expected_db)
 

@@ -225,17 +225,18 @@ class Action:
             filename = Action.default_ini
 
         # iniファイルの内容
+        authsource = f"authSource={ini_data['auth_dbname']}"
         put_data = [
             '[DB]',
             '# DB user settings\n',
             '# MongoDB default port 27017',
-            'port = ' + str(ini_data['port']) + '\n',
+            f"port = {str(ini_data['port'])}" + '\n',
             '# MongoDB server host',
-            'host = ' + ini_data['host'] + '\n',
-            'database = ' + ini_data['dbname'],
-            'auth_database = ' + ini_data['auth_dbname'],
-            'user = ' + ini_data['username'],
-            'password = ' + ini_data['userpwd'] + '\n'
+            f"host = {ini_data['host']}" + '\n',
+            f"user = {ini_data['username']}",
+            f"password = {ini_data['userpwd']}",
+            f"database = {ini_data['dbname']}",
+            f'options = ["{authsource}"]' + '\n'
         ]
 
         # iniファイルの書き出し
@@ -432,4 +433,13 @@ class Action:
         """
         settings = configparser.ConfigParser()
         settings.read(Action.generate_config_path(input_file))
-        return dict([i for i in settings['DB'].items()])
+
+        result = {}
+        for k,v in settings['DB'].items():
+            if k == 'options':
+                s = json.loads(v)
+            else:
+                s = v
+            result.update({k:s})
+        return result
+        # return dict([i for i in settings['DB'].items()])

@@ -7,7 +7,7 @@ port = 27017
 # MongoDB server host
 host = 127.0.0.1
 
-database = database_name
-auth_database = authenticate_database_name
 user = user_name
 password = user_password
+database = database_name
+options = ["authSource=authenticate_database_name"]
