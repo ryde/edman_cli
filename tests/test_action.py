@@ -184,7 +184,6 @@ class TestAction(TestCase):
         }
         with tempfile.TemporaryDirectory() as tmp_dir:
             p = Path(tmp_dir)
-
             Action.create_ini(data, p)
 
             # 実際にファイルがあるかテスト
@@ -194,20 +193,9 @@ class TestAction(TestCase):
             # ファイルの中身があっているかテスト
             a = configparser.ConfigParser()
             a.read(dbfile_path)
-
             actual_db = {}
             for k, v in a['DB'].items():
                 actual_db.update({k: json.loads(v) if k == 'options' else v})
-            #     if k == 'options':
-            #         print(k,v)
-            #         s = json.loads(v)
-            #     else:
-            #         s = v
-            #     actual_db.update({k:s})
-
-
-            # actual_db = dict([i for i in a['DB'].items()])
-
             expected_db = {
                 'port': '27017',
                 'host': '127.0.0.1',
@@ -215,7 +203,6 @@ class TestAction(TestCase):
                 'password': 'userpwd',
                 'database': 'userdb',
                 'options': ["authSource=userdb"]}
-
             self.assertDictEqual(actual_db, expected_db)
 
             # 連続したファイルを生成した場合のテスト
@@ -224,6 +211,34 @@ class TestAction(TestCase):
                 Action.create_ini(data, p)
             ps = sorted(p.glob('*.ini'))
             self.assertEqual(files_count + 1, len(ps))
+
+        # LDAP設定の時
+        # データ作成
+        data = {
+            'host': '127.0.0.1',
+            'port': 27017,
+            'username': 'username',
+            'dbname': 'userdb',
+            'auth_dbname': 'userdb'
+        }
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            p = Path(tmp_dir)
+            Action.create_ini(data, p, ldap=True)
+
+            # ファイルの中身があっているかテスト
+            a = configparser.ConfigParser()
+            a.read(p / 'db.ini')
+            actual_db = {}
+            for k, v in a['DB'].items():
+                actual_db.update({k: json.loads(v) if k == 'options' else v})
+            expected_db = {
+                'port': '27017',
+                'host': '127.0.0.1',
+                'user': 'username',
+                'database': 'userdb',
+                'options': ['authMechanism=PLAIN']}
+            self.assertDictEqual(actual_db, expected_db)
+
 
     @skipIf(import_flag is False, 'There is no action.py')
     def test_is_duplicate_filename(self):

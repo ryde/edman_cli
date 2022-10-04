@@ -8,6 +8,8 @@ from pathlib import Path
 from collections import OrderedDict
 from typing import Iterator, Union
 from pymongo import MongoClient, errors
+from edman import DB
+from edman.exceptions import EdmanDbConnectError, EdmanDbProcessError
 
 
 class Action:
@@ -141,7 +143,7 @@ class Action:
 
     @staticmethod
     def create(admin: dict, user: dict, ini_dir: Path, host='127.0.0.1',
-               port=27017) -> None:
+               port=27017, ldap=False) -> None:
         """
         ユーザ権限のDBを作成する
 
@@ -150,71 +152,79 @@ class Action:
         :param str host: ホスト名
         :param int port: 接続ポート
         :param Path ini_dir: 接続情報用iniファイルの格納場所
+        :param bool ldap:
         :return:
         """
-        admindb = admin['dbname']
-        adminname = admin['name']
+        # admin接続でDBクラスをインスタンス化
         adminauth = admin['name']
-        adminpwd = admin['pwd']
-
-        userdb = user['dbname']
-        username = user['name']
-        # userauthdb = user['dbname']
-        userpwd = user['pwd']
-
-        statement = f'mongodb://{adminname}:{adminpwd}@{host}:{port}/?authSource={adminauth}'
-        client = MongoClient(statement)
-        edman_db = client[admindb]
-
-        try:  # 現状、認証を確認する方法がないため、これで代用
-            _ = edman_db.list_collection_names()
-        except errors.OperationFailure:
-            sys.exit('Authenticate failed.')
-        except Exception:
-            sys.exit('DB Connect failed.')
-        if userdb in [i['db'] for i in edman_db['system.users'].find()]:
-            sys.exit('DB name is duplicated.')
-
-        # 指定のDBを作成
+        admin_ini = {
+            'user': admin['name'],
+            'host': host,
+            'port': port,
+            'database': admin['dbname'],
+            'password': admin['pwd'],
+            'options': [f'authSource={adminauth}']
+        }
         try:
-            client[userdb].command(
-                "createUser",
-                username,
-                pwd=userpwd,
-                roles=[
-                    {
-                        'role': 'dbOwner',
-                        'db': userdb,
-                    },
-                ],
-            )
-        except errors.OperationFailure:
-            sys.exit('DB creation failed.')
-        print('DB Create OK.')
+            admin_cl = DB(admin_ini)
+        except EdmanDbConnectError:
+            sys.exit('DB not connect.')
 
+        # 重複するデータは登録できないので予め阻止
+        d = admin_cl.get_db
+        if d['system.users'].count_documents(
+                {
+                    '$or': [
+                        {'user': user['name']},
+                        {'db': user['dbname']}
+                    ]
+                }):
+        # if d['system.users'].find(
+        #         {
+        #             '$or': [
+        #                 {'user': user['name']},
+        #                 {'db': user['dbname']}
+        #             ]
+        #         }).count():
+            sys.exit('user name or user db is duplicated.')
+
+        # iniファイル書き出し処理
         if ini_dir is not None:
-            # iniファイル書き出し処理
             ini_data = {
                 'host': host,
                 'port': port,
-                'username': username,
-                'userpwd': userpwd,
-                'dbname': userdb,
-                'auth_dbname': userdb
+                'username': user['name'],
+                'dbname': user['dbname']
             }
-            Action.create_ini(ini_data, ini_dir)
+            if not ldap:
+                ini_data['userpwd'] = user['pwd']
+                ini_data['auth_dbname'] = user['dbname']
+
+            Action.create_ini(ini_data, ini_dir, ldap)
+
+        # 指定のDB、ユーザ、もしくはロールを作成
+        try:
+            if ldap:
+                admin_cl.create_role_and_db(user['dbname'], user['name'])
+            else:
+                admin_cl.create_user_and_db(user['dbname'], user['name'],
+                                        user['pwd'])
+        except EdmanDbProcessError:
+            sys.exit('DB,User/Role creation failed.')
+        else:
+            print('DB,User/Role Create OK.')
 
     @staticmethod
-    def create_ini(ini_data: dict, ini_dir: Path) -> None:
+    def create_ini(ini_data: dict, ini_dir: Path, ldap=False) -> None:
         """
         指定のディレクトリにiniファイルを作成
         同名ファイルがあった場合はname_[file_count +1].iniとして作成
 
         :param dict ini_data: 接続情報用iniファイルに記載するデータ
         :param Path ini_dir: 格納場所
+        :param bool ldap:
         :return:
         """
-
         # この値は現在固定
         dup_flg, proposal_filename = Action.is_duplicate_filename(ini_dir)
         if dup_flg:
@@ -224,20 +234,33 @@ class Action:
         else:
             filename = Action.default_ini
 
-        # iniファイルの内容
-        authsource = f"authSource={ini_data['auth_dbname']}"
-        put_data = [
-            '[DB]',
-            '# DB user settings\n',
-            '# MongoDB default port 27017',
-            f"port = {str(ini_data['port'])}" + '\n',
-            '# MongoDB server host',
-            f"host = {ini_data['host']}" + '\n',
-            f"user = {ini_data['username']}",
-            f"password = {ini_data['userpwd']}",
-            f"database = {ini_data['dbname']}",
-            f'options = ["{authsource}"]' + '\n'
-        ]
+        if ldap:
+            put_data = [
+                '[DB]',
+                '# DB user settings\n',
+                '# MongoDB default port 27017',
+                f"port = {str(ini_data['port'])}" + '\n',
+                '# MongoDB server host',
+                f"host = {ini_data['host']}" + '\n',
+                f"user = {ini_data['username']}",
+                f"database = {ini_data['dbname']}",
+                'options = ["authMechanism=PLAIN"]' + '\n'
+            ]
+        else:
+            # iniファイルの内容
+            authsource = f"authSource={ini_data['auth_dbname']}"
+            put_data = [
+                '[DB]',
+                '# DB user settings\n',
+                '# MongoDB default port 27017',
+                f"port = {str(ini_data['port'])}" + '\n',
+                '# MongoDB server host',
+                f"host = {ini_data['host']}" + '\n',
+                f"user = {ini_data['username']}",
+                f"password = {ini_data['userpwd']}",
+                f"database = {ini_data['dbname']}",
+                f'options = ["{authsource}"]' + '\n'
+            ]
 
         # iniファイルの書き出し
         savefile = ini_dir / filename
@@ -318,45 +341,48 @@ class Action:
             return False, None
 
     @staticmethod
-    def generate_account(user: str) -> dict:
+    def generate_account(user: str, ldap=False) -> dict:
         """
         DBアカウント作成のための画面表示
 
         :param str user:
+        :param bool ldap:
         :return: account
         :rtype: dict
         """
         acc = OrderedDict()
         acc['name'] = f"MongoDB's {user} name >> "
         acc['dbname'] = f"MongoDB's {user} DB >> "
-        acc['pwd'] = f"MongoDB's {user} password >> "
-        acc['pwd_verification'] = f"MongoDB's {user} Verification password >> "
+
+        if not ldap:
+            acc['pwd'] = f"MongoDB's {user} password >> "
+            acc['pwd_verification'] = f"MongoDB's {user} Verification password >> "
+
         account = {}
         for key, value in acc.items():
-
-            if 'pwd' == key:
+            buff = ""
+            if 'name' == key or 'dbname' == key:
                 while True:
-                    buff = getpass.getpass(value)
-                    if not buff:
+                    if not (buff := input(value)):
                         print('Required!')
-                    else:
-                        break
-            elif 'pwd_verification' == key:
-                while True:
-                    buff = getpass.getpass(value)
-                    if account['pwd'] != buff:
-                        print('Do not match!')
                     else:
                         break
             else:
-                while True:
-                    buff = input(value)
-                    if not buff:
-                        print('Required!')
-                    else:
-                        break
-
+                if not ldap:
+                    if 'pwd' == key:
+                        while True:
+                            if not (buff := getpass.getpass(value)):
+                                print('Required!')
+                            else:
+                                break
+                    elif 'pwd_verification' == key:
+                        while True:
+                            if account['pwd'] != (buff := getpass.getpass(value)):
+                                print('Do not match!')
+                            else:
+                                break
             account[key] = buff
+
             if account.get('pwd_verification'):
                 del account['pwd_verification']
 
@@ -435,11 +461,11 @@ class Action:
         settings.read(Action.generate_config_path(input_file))
 
         result = {}
-        for k,v in settings['DB'].items():
+        for k, v in settings['DB'].items():
             if k == 'options':
                 s = json.loads(v)
             else:
                 s = v
-            result.update({k:s})
+            result.update({k: s})
         return result
         # return dict([i for i in settings['DB'].items()])

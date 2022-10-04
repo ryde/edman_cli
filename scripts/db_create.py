@@ -15,6 +15,8 @@ def main():
     parser = argparse.ArgumentParser(description='MongoDBのユーザとDBを作成するスクリプト')
     parser.add_argument('-n', '--not_ini', action='store_false',
                         help='Do not create db.ini.')
+    parser.add_argument('-d', '--db_only', action='store_true',
+                        help='DB and Role create only(for LDAP User).')
 
     # 引数を付けなかった場合はヘルプを表示して終了する
     # if len(sys.argv) == 1:
@@ -27,7 +29,7 @@ def main():
         admin_account = Action.generate_account("Admin")
 
         # ユーザアカウント入力
-        user_account = Action.generate_account("User")
+        user_account = Action.generate_account("User", ldap=args.db_only)
 
         if args.not_ini:
             # iniセーブパス入力
@@ -39,9 +41,9 @@ def main():
                 elif (not p.exists()) or (not p.is_dir()):
                     print('path is invalid')
                 else:
-
                     ini_dir = p.resolve()
-                    dup_flg, proposal_name = Action.is_duplicate_filename(ini_dir)
+                    dup_flg, proposal_name = Action.is_duplicate_filename(
+                        ini_dir)
                     if dup_flg:
                         print(
                             f'Create in {proposal_name}'
@@ -62,15 +64,15 @@ def main():
                 break
             elif not port.isdigit():
                 print('input port(number)')
-            elif len(port) > 5:
-                print('input port(Max 5 digits)')
+            elif not (1024 <= int(port) <= 49151):
+                print('input user port.')
             else:
                 port = int(port)
                 break
 
         # 最終確認
-        Action.outputs({'Admin': admin_account, 'User': user_account}, host, port,
-                       ini_dir)
+        Action.outputs({'Admin': admin_account, 'User': user_account}, host,
+                       port, ini_dir)
 
         while True:
             confirm = input('OK? y/n(exit) >>')
@@ -82,7 +84,8 @@ def main():
                 continue
 
         # DB作成
-        Action.create(admin_account, user_account, ini_dir, host, port)
+        Action.create(admin_account, user_account, ini_dir, host, port,
+                      ldap=args.db_only)
 
         # テスト用のためにここに置く
         # db.destroy(user_account, host, port, admin=admin_account, del_user=True)
@@ -91,6 +94,7 @@ def main():
         tb = sys.exc_info()[2]
         sys.stderr.write(f'{type(e).__name__}: {e.with_traceback(tb)}\n')
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()
