@@ -7,7 +7,6 @@ import configparser
 from pathlib import Path
 from collections import OrderedDict
 from typing import Iterator, Union
-from pymongo import MongoClient, errors
 from edman import DB
 from edman.exceptions import EdmanDbConnectError, EdmanDbProcessError
 
@@ -179,13 +178,6 @@ class Action:
                         {'db': user['dbname']}
                     ]
                 }):
-        # if d['system.users'].find(
-        #         {
-        #             '$or': [
-        #                 {'user': user['name']},
-        #                 {'db': user['dbname']}
-        #             ]
-        #         }).count():
             sys.exit('user name or user db is duplicated.')
 
         # iniファイル書き出し処理
@@ -208,7 +200,7 @@ class Action:
                 admin_cl.create_role_and_db(user['dbname'], user['name'])
             else:
                 admin_cl.create_user_and_db(user['dbname'], user['name'],
-                                        user['pwd'])
+                                            user['pwd'])
         except EdmanDbProcessError:
             sys.exit('DB,User/Role creation failed.')
         else:
@@ -275,49 +267,57 @@ class Action:
             print('ini file not create.Please create it manually.')
 
     @staticmethod
-    def destroy(user: dict, host: str, port: int, admin=None,
-                del_user=False) -> None:
+    def destroy(user: dict, host: str, port: int, admin,
+                ldap=False) -> None:
         """
-        DBを削除する
-        del_userがTrue, かつadmin_accountがNoneでない時はユーザも削除する
+        DBとユーザもしくはロールを削除する
+        管理者権限が必要
 
         :param dict user: 削除対象のユーザデータ
         :param str host: ホスト名
         :param int port: ポート番号
-        :param admin: ユーザを削除する場合のみ管理者のデータが必要
-        :type admin: dict or None
-        :param bool del_user: ユーザ削除フラグ
+        :param dict admin:
+        :param bool ldap:
         :return:
         """
-        if del_user and admin is None:
-            sys.exit('You need administrator privileges to delete users.')
-
-        userdb = user['dbname']
-        userid = user['name']
-        userpwd = user['pwd']
-        statement = f'mongodb://{userid}:{userpwd}@{host}:{port}/?authSource={userdb}'
-        client = MongoClient(statement)
-
-        # DB削除
+        # admin接続でDBクラスをインスタンス化
+        adminauth = admin['name']
+        admin_ini = {
+            'user': admin['name'],
+            'host': host,
+            'port': port,
+            'database': admin['dbname'],
+            'password': admin['pwd'],
+            'options': [f'authSource={adminauth}']
+        }
         try:
-            client.drop_database(userdb)
-            print('DB delete OK.')
-        except errors.OperationFailure:
-            sys.exit('Delete DB failed. Delete DB in Mongo shell.')
+            db = DB(admin_ini)
+        except EdmanDbConnectError:
+            sys.exit('DB not connect.')
 
-        # admin権限にてユーザを削除
-        if del_user:
-            admindb = admin['dbname']
-            adminid = admin['name']
-            adminpwd = admin['pwd']
-            statement = f'mongodb://{adminid}:{adminpwd}@{host}:{port}/?authSource={admindb}'
-            client = MongoClient(statement)
-            try:
-                db = client[userdb]
-                db.command("dropUser", userid)
-                print('DB User delete OK.')
-            except errors.OperationFailure:
-                sys.exit('Delete user failed. Delete user in Mongo shell.')
+        # ユーザもしくはロールが存在するかどうか
+        d = db.get_db
+        if ldap:
+            target_collection = 'system.roles'
+            find_value = {'role': user['name']}
+            err_message = f"Role name {user['name']}"
+        else:
+            target_collection = 'system.users'
+            find_value = {'user': user['name']}
+            err_message = f"User name {user['name']}"
+        if not d[target_collection].find(find_value):
+            sys.exit(f"{err_message}, does not exist.")
+
+        # DB,ロールもしくはユーザ削除
+        try:
+            if ldap:
+                db.delete_role_and_db(user['dbname'], user['name'])
+            else:
+                db.delete_user_and_db(user['dbname'], user['name'])
+        except EdmanDbProcessError:
+            sys.exit('DB,User/Role delete failed.')
+        else:
+            print('DB,User/Role delete OK.')
 
     @staticmethod
     def is_duplicate_filename(ini_dir: Path) -> tuple[bool, Union[str, None]]:
@@ -356,7 +356,8 @@ class Action:
 
         if not ldap:
             acc['pwd'] = f"MongoDB's {user} password >> "
-            acc['pwd_verification'] = f"MongoDB's {user} Verification password >> "
+            acc[
+                'pwd_verification'] = f"MongoDB's {user} Verification password >> "
 
         account = {}
         for key, value in acc.items():
@@ -377,7 +378,8 @@ class Action:
                                 break
                     elif 'pwd_verification' == key:
                         while True:
-                            if account['pwd'] != (buff := getpass.getpass(value)):
+                            if account['pwd'] != (
+                            buff := getpass.getpass(value)):
                                 print('Do not match!')
                             else:
                                 break

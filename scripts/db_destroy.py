@@ -11,28 +11,25 @@ def main():
     signal.signal(signal.SIGINT, lambda sig, frame: sys.exit('\n'))
 
     # コマンドライン引数処理
-    parser = argparse.ArgumentParser(description='DB及びDB管理ユーザ削除スクリプト')
-    parser.add_argument('-ru', '--remove_user',
-                        help='Remove DB user,MongoDB Admin account required.',
+    parser = argparse.ArgumentParser(
+        description='DB及びDB管理ユーザ/管理ロール削除スクリプト')
+    parser.add_argument('-r', '--remove_role',
+                        help='Remove DB and role(LDAP User),MongoDB Admin account required.',
                         action='store_true')
 
     # 引数を付けなかった場合はヘルプを表示して終了する
-    if len(sys.argv) == 1:
-        parser.parse_args(["-h"])
-        sys.exit(0)
-    args = parser.parse_args()
+    # if len(sys.argv) == 1:
+    #     parser.parse_args(["-h"])
+    #     sys.exit(0)
 
+    args = parser.parse_args()
     try:
         # 管理者アカウント入力
-        if args.remove_user:
-            del_user = True
-            admin_account = Action.generate_account("Admin")
-        else:
-            del_user = False
-            admin_account = None
+        admin_account = Action.generate_account("Admin")
 
         # ユーザアカウント入力
-        user_account = Action.generate_account('user')
+        # 削除するのはadminなのでユーザのパスワードの入力は問われない、したがってldap=Trueにしている
+        user_account = Action.generate_account('user', ldap=True)
 
         # ホスト名入力(デフォルト設定あり)
         host = input(
@@ -46,24 +43,19 @@ def main():
                 break
             elif not port.isdigit():
                 print('input port(number)')
-            elif len(port) > 5:
-                print('input port(Max 5 digits)')
+            elif not (1024 <= int(port) <= 49151):
+                print('input user port.')
             else:
                 port = int(port)
                 break
 
         # 入力値表示
-        if args.remove_user and admin_account is not None:
-            Action.value_output('admin', admin_account)
-
+        Action.value_output('admin', admin_account)
         Action.value_output('user', user_account)
-
         print(f"""
         host : {host}
         port : {port}
         """)
-
-        # 最終確認
         print(user_account['dbname'], 'is Erase all data.')
         while True:
             confirm = input('OK? y/n(exit) >>')
@@ -76,12 +68,13 @@ def main():
 
         # DBの削除
         Action.destroy(user_account, host, port, admin=admin_account,
-                       del_user=del_user)
+                       ldap=args.remove_role)
 
     except Exception as e:
         tb = sys.exc_info()[2]
         sys.stderr.write(f'{type(e).__name__}: {e.with_traceback(tb)}\n')
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()
