@@ -6,8 +6,8 @@ commonmark==0.9.1
 cryptography==38.0.3
 dnspython==2.2.1
 docutils==0.19
-edman==2022.10.17
--e git+ssh://git@github.com/ryde/edman_cli.git@f1935eefa5df73f2c6d15efce2887eb1ad960923#egg=edman_cli
+edman==2022.11.21
+-e git+ssh://git@github.com/ryde/edman_cli.git@017394b9bab33cd85f6467c031cf0491ba127215#egg=edman_cli
 idna==3.4
 importlib-metadata==5.0.0
 jaraco.classes==3.2.3
