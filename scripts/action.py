@@ -197,10 +197,10 @@ class Action:
         # 指定のDB、ユーザ、もしくはロールを作成
         try:
             if ldap:
-                admin_cl.create_role_and_db(user['dbname'], user['name'])
+                admin_cl.create_role(user['dbname'], user['name'])
             else:
-                admin_cl.create_user_and_db(user['dbname'], user['name'],
-                                            user['pwd'])
+                admin_cl.create_user_and_role(user['dbname'], user['name'],
+                                              user['pwd'])
         except EdmanDbProcessError:
             sys.exit('DB,User/Role creation failed.')
         else:
@@ -311,11 +311,15 @@ class Action:
         # DB,ロールもしくはユーザ削除
         try:
             if ldap:
-                db.delete_role_and_db(user['dbname'], user['name'])
+                db.delete_role(user['name'], user['dbname'])
+                db.delete_db(user['dbname'])
             else:
-                db.delete_user_and_db(user['dbname'], user['name'])
+                db.delete_user_and_role(user['name'], user['dbname'])
+                db.delete_db(user['dbname'])
         except EdmanDbProcessError:
             sys.exit('DB,User/Role delete failed.')
+        except:
+            sys.exit('DB,User/Role delete failed for unknown reason.')
         else:
             print('DB,User/Role delete OK.')
 
@@ -379,7 +383,7 @@ class Action:
                     elif 'pwd_verification' == key:
                         while True:
                             if account['pwd'] != (
-                            buff := getpass.getpass(value)):
+                                    buff := getpass.getpass(value)):
                                 print('Do not match!')
                             else:
                                 break
