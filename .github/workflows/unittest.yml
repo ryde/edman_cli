@@ -1,0 +1,29 @@
+name: edman_cli Unittest
+
+on:
+  push:
+    branches: [ develop ]
+
+jobs:
+  edman_cli_unittest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: setup
+        uses: actions/checkout@v3
+
+      - name: setup python and sources
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          check-latest: true
+      - run: python -m venv venv
+      - run:  source ./venv/bin/activate
+      - run:  pip install -U pip setuptools
+      - run:  pip install .
+      - run:  cp ./tests/ini/test_db.ini.sample ./tests/ini/test_db.ini
+
+      - name: run unittest
+        run: |
+          cd ./tests
+          pytest
