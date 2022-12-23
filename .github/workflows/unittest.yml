@@ -20,6 +20,7 @@ jobs:
       - run: python -m venv venv
       - run:  source ./venv/bin/activate
       - run:  pip install -U pip setuptools
+      - run:  pip install pytest
       - run:  pip install .
       - run:  cp ./tests/ini/test_db.ini.sample ./tests/ini/test_db.ini
 
