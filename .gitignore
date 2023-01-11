@@ -143,3 +143,5 @@ scripts/ini/db.ini
 
 # circleci
 .circleci/config.yml.bak
+
+.idea
