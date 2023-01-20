@@ -90,5 +90,5 @@ Author
 
 [ryde](https://github.com/ryde)
 
-.. |py_version| image:: https://img.shields.io/badge/python-3.10-blue.svg
+.. |py_version| image:: https://img.shields.io/badge/python-3.11-blue.svg
     :alt: Use python
