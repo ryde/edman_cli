@@ -442,7 +442,6 @@ class Action:
         :return: result
         :rtype: Path
         """
-
         if filepath is not None:
             p = Path(filepath)
             if p.exists():
@@ -465,13 +464,6 @@ class Action:
         """
         settings = configparser.ConfigParser()
         settings.read(Action.generate_config_path(input_file))
-
-        result = {}
-        for k, v in settings['DB'].items():
-            if k == 'options':
-                s = json.loads(v)
-            else:
-                s = v
-            result.update({k: s})
+        result = {k: json.loads(v) if k == 'options' else v for k, v in
+                  settings['DB'].items()}
         return result
-        # return dict([i for i in settings['DB'].items()])
