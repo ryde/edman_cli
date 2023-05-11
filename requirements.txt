@@ -1,15 +1,15 @@
 bleach==6.0.0
-certifi==2022.12.7
+certifi==2023.5.7
 cffi==1.15.1
 charset-normalizer==3.1.0
 commonmark==0.9.1
-cryptography==40.0.1
+cryptography==40.0.2
 dnspython==2.3.0
-docutils==0.19
-edman==2023.3.15
--e git+ssh://git@github.com/ryde/edman_cli.git@6009ae3a98be73fc1d5d1c04818e91326c3ad693#egg=edman_cli
+docutils==0.20
+edman==2023.5.11
+-e git+ssh://git@github.com/ryde/edman_cli.git@f1329cbcf3fb5d6d358610da21754cdc6f8917e8#egg=edman_cli
 idna==3.4
-importlib-metadata==6.1.0
+importlib-metadata==6.6.0
 jaraco.classes==3.2.3
 jeepney==0.8.0
 jmespath==1.0.1
@@ -19,17 +19,17 @@ mdurl==0.1.2
 more-itertools==9.1.0
 pkginfo==1.9.6
 pycparser==2.21
-Pygments==2.14.0
+Pygments==2.15.1
 pymongo==4.3.3
 python-dateutil==2.8.2
 readme-renderer==37.3
-requests==2.28.2
-requests-toolbelt==0.10.1
+requests==2.30.0
+requests-toolbelt==1.0.0
 rfc3986==2.0.0
-rich==13.3.3
+rich==13.3.5
 SecretStorage==3.3.3
 six==1.16.0
 twine==4.0.2
-urllib3==1.26.15
+urllib3==2.0.2
 webencodings==0.5.1
 zipp==3.15.0
