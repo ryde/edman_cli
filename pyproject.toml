@@ -1,0 +1,51 @@
+[build-system]
+requires = ["wheel", "setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "edman_cli"
+description = "Sub-package of edman for cli applications and scripts."
+authors = [
+    {name = "Masaki Ohno", email = "masakio@post.kek.jp"},
+]
+readme = "README.rst"
+requires-python = ">=3.11"
+license = {file = "LICENSE.txt"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Database :: Front-Ends",
+]
+dependencies = [
+    "pymongo~=4.3.3",
+    " python-dateutil~=2.8.2",
+    "jmespath~=1.0.1",
+    "edman~=2023.5.11",
+]
+version = "2023.5.11"
+
+[project.urls]
+"repository" = "https://github.com/ryde/edman_cli"
+
+[tool.setuptools.packages.find]
+exclude = ["tests"]
+
+[project.scripts]
+ed_assign_bson_type = "scripts.assign_bson_type:main"
+ed_db_create = "scripts.db_create:main"
+ed_db_destroy = "scripts.db_destroy:main"
+ed_delete = "scripts.delete:main"
+ed_entry = "scripts.entry:main"
+ed_file_add = "scripts.file_add:main"
+ed_file_delete = "scripts.file_delete:main"
+ed_file_dl = "scripts.file_dl:main"
+ed_find = "scripts.find:main"
+ed_item_delete = "scripts.item_delete:main"
+ed_pullout = "scripts.pullout:main"
+ed_structure_convert = "scripts.structure_convert:main"
+ed_update = "scripts.update:main"
+
+[tool.pytest.ini_options]
+addopts = "-p no:cacheprovider"
+testpaths = ["tests"]
