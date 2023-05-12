@@ -1,5 +1,4 @@
 def main():
-
     import sys
     import signal
     import argparse
@@ -43,9 +42,12 @@ def main():
         # クエリの変換
         query = Action.file_query_eval(args.query, structure)
 
-        if file.add_file_reference(collection, args.objectid,
-                                   Action.files_read(args.path), structure, query,
-                                   args.compress):
+        # データを作成
+        files = [(file, False) for file in Action.files_read(args.path)]
+
+        # ファイルのアップロード
+        if file.upload(collection, args.objectid, tuple(files), structure,
+                       query):
             print('更新しました')
         else:
             print('更新に失敗しました')
@@ -54,6 +56,7 @@ def main():
         tb = sys.exc_info()[2]
         sys.stderr.write(f'{type(e).__name__}: {e.with_traceback(tb)}\n')
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()
