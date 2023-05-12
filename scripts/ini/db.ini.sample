@@ -11,3 +11,5 @@ user = user_name
 password = user_password
 database = database_name
 options = ["authSource=authenticate_database_name"]
+# LDAP USER SETTINGS
+# options = ["authMechanism=PLAIN"]
