@@ -54,23 +54,8 @@ def main():
             print('(' + str(idx) + ')', filename, oid)
             file_oids.append(oid)
 
-        # 複数ファイルの場合、表示されている選択番号を入力
-        if len(file_names) > 1:
-            while True:
-                selected_idx = input('0 - ' + str(len(file_names) - 1) + ' > ')
-                if selected_idx.isdecimal() and (
-                        0 <= int(selected_idx) < len(file_names)):
-                    break
-                else:
-                    print('Required!')
-        # ファイルが一つしかない場合は選択無しでDL
-        elif len(file_names) == 1:
-            selected_idx = 0
-        else:
-            sys.exit('インデックスが不正です')
-
         # 指定のディレクトリにダウンロード
-        if file.download(file_oids[int(selected_idx)], args.path):
+        if file.download(file_oids, args.path):
             print('DLしました')
 
     except Exception as e:
