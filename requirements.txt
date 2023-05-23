@@ -6,9 +6,9 @@ charset-normalizer==3.1.0
 commonmark==0.9.1
 cryptography==40.0.2
 dnspython==2.3.0
-docutils==0.20
-edman==2023.5.12
--e git+ssh://git@github.com/ryde/edman_cli.git@f1329cbcf3fb5d6d358610da21754cdc6f8917e8#egg=edman_cli
+docutils==0.20.1
+edman==2023.5.23
+-e git+ssh://git@github.com/ryde/edman_cli.git@9a466cc9115b56c23c4a6f3fe844b3b586e8d587#egg=edman_cli
 idna==3.4
 importlib-metadata==6.6.0
 jaraco.classes==3.2.3
@@ -18,6 +18,8 @@ keyring==23.13.1
 markdown-it-py==2.2.0
 mdurl==0.1.2
 more-itertools==9.1.0
+mypy==1.3.0
+mypy-extensions==1.0.0
 packaging==23.1
 pkginfo==1.9.6
 pycparser==2.21
@@ -26,13 +28,14 @@ pymongo==4.3.3
 pyproject_hooks==1.0.0
 python-dateutil==2.8.2
 readme-renderer==37.3
-requests==2.30.0
+requests==2.31.0
 requests-toolbelt==1.0.0
 rfc3986==2.0.0
 rich==13.3.5
 SecretStorage==3.3.3
 six==1.16.0
 twine==4.0.2
+typing_extensions==4.6.0
 urllib3==2.0.2
 webencodings==0.5.1
 zipp==3.15.0
