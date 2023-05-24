@@ -366,7 +366,7 @@ class Action:
             acc['pwd_verification'] = (f"MongoDB's {user} "
                                        f"Verification password >> ")
 
-        account:dict = {}
+        account: dict = {}
         for key, value in acc.items():
             buff = ""
             if 'name' == key or 'dbname' == key:
