@@ -20,11 +20,20 @@ jobs:
       - run: python -m venv venv
       - run:  source ./venv/bin/activate
       - run:  pip install -U pip setuptools
-      - run:  pip install pytest
+      - run:  pip install pytest mypy flake8
       - run:  pip install .
       - run:  cp ./tests/ini/test_db.ini.sample ./tests/ini/test_db.ini
 
-      - name: run unittest
+      - name: run pytest
         run: |
           cd ./tests
           pytest
+
+      - name: run mypy
+        run: |
+          mypy ./scripts
+
+      - name: run flake8
+        run: |
+          flake8 ./scripts
+          
