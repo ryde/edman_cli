@@ -113,7 +113,7 @@ class Action:
         return query
 
     @staticmethod
-    def file_query_eval(raw_query: str, structure: str) -> list:
+    def file_query_eval(raw_query: str, structure: str) -> list | None:
         """
         embの場合文字列のクエリを受け取り、リストに変換する
         refの場合はNoneを返す
@@ -121,7 +121,7 @@ class Action:
         :param str raw_query:
         :param str structure:
         :return: query
-        :rtype: list
+        :rtype: list or None
         """
         # embのときだけクエリが必須
         if 'ref' in structure:
@@ -256,7 +256,7 @@ class Action:
             ]
 
         # iniファイルの書き出し
-        savefile = ini_dir / filename
+        savefile = ini_dir / filename  # type: ignore
         try:
             with savefile.open("w") as file:
                 file.writelines('\n'.join(put_data))
@@ -322,7 +322,7 @@ class Action:
         except EdmanDbConnectError:
             sys.exit('DB not connect.')
         except Exception as e:
-            sys.exit(e)
+            sys.exit(str(e))
         else:
             print('DB,User/Role delete OK.')
 
@@ -366,7 +366,7 @@ class Action:
             acc['pwd_verification'] = (f"MongoDB's {user} "
                                        f"Verification password >> ")
 
-        account = {}
+        account:dict = {}
         for key, value in acc.items():
             buff = ""
             if 'name' == key or 'dbname' == key:
@@ -413,7 +413,7 @@ class Action:
 
     @staticmethod
     def outputs(users: dict, host: str, port: int,
-                ini_dir: Union[Path, None]) -> None:
+                ini_dir: Path | None) -> None:
         """
             DB入力項目の確認表示(サーバ項目)
 
@@ -433,7 +433,8 @@ class Action:
         if ini_dir is not None:
             dup_flg, proposal_filename = Action.is_duplicate_filename(ini_dir)
             filename = proposal_filename if dup_flg else Action.default_ini
-            print(f"ini path : {ini_dir / filename}")
+            ini_path = ini_dir / filename  # type: ignore
+            print(f"ini path : {ini_path}")
 
     @staticmethod
     def generate_config_path(filepath: Union[str, None]) -> Path:

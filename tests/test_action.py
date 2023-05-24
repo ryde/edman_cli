@@ -13,7 +13,7 @@ import_path = cwd.parent / 'scripts'
 import_path_full = import_path / 'action.py'
 if import_path_full.exists():
     sys.path.append(str(import_path))
-    from action import Action
+    from action import Action  # type: ignore
 
     import_flag = True
 else:
