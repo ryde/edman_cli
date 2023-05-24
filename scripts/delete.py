@@ -1,8 +1,10 @@
 def main():
-    import sys
-    import signal
     import argparse
+    import signal
+    import sys
+
     from edman import DB
+
     from scripts.action import Action
 
     # Ctrl-Cを押下された時の対策

@@ -1,8 +1,8 @@
+import configparser
+import json
+import shutil
 import sys
 import tempfile
-import shutil
-import json
-import configparser
 from pathlib import Path
 from unittest import TestCase, skipIf
 

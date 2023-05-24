@@ -1,12 +1,13 @@
-import sys
-import os
-import json
 import ast
-import getpass
 import configparser
-from pathlib import Path
+import getpass
+import json
+import os
+import sys
 from collections import OrderedDict
+from pathlib import Path
 from typing import Iterator, Union
+
 from edman import DB
 from edman.exceptions import EdmanDbConnectError, EdmanDbProcessError
 

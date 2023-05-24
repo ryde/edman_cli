@@ -2,10 +2,11 @@ def main():
     """
     新しいユーザ権限のDBを作成
     """
-    import sys
-    import signal
     import argparse
+    import signal
+    import sys
     from pathlib import Path
+
     from scripts.action import Action
 
     # Ctrl-Cを押下された時の対策

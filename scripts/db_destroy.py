@@ -2,9 +2,10 @@ def main():
     """
     DBと認証ユーザを削除する
     """
-    import sys
-    import signal
     import argparse
+    import signal
+    import sys
+
     from scripts.action import Action
 
     # Ctrl-Cを押下された時の対策
