@@ -89,7 +89,8 @@ def main():
                       ldap=args.db_only)
 
         # テスト用のためにここに置く
-        # db.destroy(user_account, host, port, admin=admin_account, del_user=True)
+        # db.destroy(user_account, host, port, admin=admin_account,
+        # del_user=True)
 
     except Exception as e:
         tb = sys.exc_info()[2]

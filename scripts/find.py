@@ -10,7 +10,8 @@ def main():
     # Ctrl-Cを押下された時の対策
     signal.signal(signal.SIGINT, lambda sig, frame: sys.exit('\n'))
     # コマンドライン引数処理
-    parser = argparse.ArgumentParser(description='DBから検索して結果をJSONファイルにするスクリプト')
+    parser = argparse.ArgumentParser(
+        description='DBから検索して結果をJSONファイルにするスクリプト')
     parser.add_argument('collection')
     # コマンドもしくはファイルでの検索文字列を選択
     group = parser.add_mutually_exclusive_group()
@@ -37,7 +38,8 @@ def main():
 
     try:
         # クエリ入力値変換
-        query = Action.query_eval(args.query if args.query else args.query_file.read())
+        query = Action.query_eval(
+            args.query if args.query else args.query_file.read())
 
         # iniファイル読み込み
         con = Action.reading_config_file(args.inifile)
@@ -57,6 +59,7 @@ def main():
         tb = sys.exc_info()[2]
         sys.stderr.write(f'{type(e).__name__}: {e.with_traceback(tb)}\n')
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

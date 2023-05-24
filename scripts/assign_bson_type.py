@@ -12,7 +12,8 @@ def main():
     signal.signal(signal.SIGINT, lambda sig, frame: sys.exit('\n'))
 
     # コマンドライン引数処理
-    parser = argparse.ArgumentParser(description='DB内のRefドキュメントに型を適応するスクリプト')
+    parser = argparse.ArgumentParser(
+        description='DB内のRefドキュメントに型を適応するスクリプト')
     parser.add_argument('path', help='JSON file path.')
     parser.add_argument('-l', '--logfile',
                         help='Output logfile path. default is current dir.')
@@ -56,6 +57,7 @@ def main():
         tb = sys.exc_info()[2]
         sys.stderr.write(f'{type(e).__name__}: {e.with_traceback(tb)}\n')
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

@@ -15,7 +15,8 @@ def main():
     parser = argparse.ArgumentParser(
         description='DB及びDB管理ユーザ/管理ロール削除スクリプト')
     parser.add_argument('-r', '--remove_role',
-                        help='Remove DB and role(LDAP User),MongoDB Admin account required.',
+                        help='Remove DB and role(LDAP User),'
+                             'MongoDB Admin account required.',
                         action='store_true')
 
     # 引数を付けなかった場合はヘルプを表示して終了する

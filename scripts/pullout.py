@@ -39,10 +39,14 @@ def main():
         con = Action.reading_config_file(args.inifile)
 
         db = DB(con)
-        exclusion = tuple(args.exclusion_keys if args.exclusion_keys is not None else [])
-        result = db.loop_exclusion_key_and_ref(args.collection, args.pullout_key, exclusion)
+        exclusion = tuple(
+            args.exclusion_keys if args.exclusion_keys is not None else [])
+        _ = db.loop_exclusion_key_and_ref(args.collection,
+                                          args.pullout_key, exclusion)
 
         # 結果を保存する
+        # result = db.loop_exclusion_key_and_ref(args.collection,
+        #                                        args.pullout_key, exclusion)
         # if args.dir is not None:
         #     jm = JsonManager()
         #     jm.save(result, args.dir, 'pullout', date=True)
@@ -51,6 +55,7 @@ def main():
         tb = sys.exc_info()[2]
         sys.stderr.write(f'{type(e).__name__}: {e.with_traceback(tb)}\n')
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

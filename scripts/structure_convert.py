@@ -1,5 +1,4 @@
 def main():
-
     import argparse
     import signal
     import sys
@@ -12,11 +11,12 @@ def main():
     signal.signal(signal.SIGINT, lambda sig, frame: sys.exit('\n'))
 
     # コマンドライン引数処理
-    parser = argparse.ArgumentParser(description='DBから検索したデータをコンバートしてDBに入れるスクリプト')
+    parser = argparse.ArgumentParser(
+        description='DBから検索したデータをコンバートしてDBに入れるスクリプト')
     # parser.add_argument('-c', '--collection', help='collection name.')
     parser.add_argument('objectid', help='objectid str.')
     # parser.add_argument('-s', '--structure', default='ref',
-    #                     help='Select ref(Reference, default) or emb(embedded).')
+    #                 help='Select ref(Reference, default) or emb(embedded).')
     parser.add_argument('new_collection', help='new collection name.')
     parser.add_argument('-i', '--inifile', help='DB connect file path.')
 
@@ -42,7 +42,8 @@ def main():
         structures.remove(current_structure)
 
         while True:
-            convert_selected = input(f'{structures[0]}に変更しますか？ y/n(exit) >> ')
+            convert_selected = input(
+                f'{structures[0]}に変更しますか？ y/n(exit) >> ')
             if convert_selected == 'y':
                 result = db.structure(collection, args.objectid, structures[0],
                                       args.new_collection)
@@ -57,6 +58,7 @@ def main():
         tb = sys.exc_info()[2]
         sys.stderr.write(f'{type(e).__name__}: {e.with_traceback(tb)}\n')
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

@@ -319,8 +319,10 @@ class Action:
                 db.delete_db(user['dbname'])
         except EdmanDbProcessError:
             sys.exit('DB,User/Role delete failed.')
-        except:
-            sys.exit('DB,User/Role delete failed for unknown reason.')
+        except EdmanDbConnectError:
+            sys.exit('DB not connect.')
+        except Exception as e:
+            sys.exit(e)
         else:
             print('DB,User/Role delete OK.')
 
@@ -361,8 +363,8 @@ class Action:
 
         if not ldap:
             acc['pwd'] = f"MongoDB's {user} password >> "
-            acc[
-                'pwd_verification'] = f"MongoDB's {user} Verification password >> "
+            acc['pwd_verification'] = (f"MongoDB's {user} "
+                                       f"Verification password >> ")
 
         account = {}
         for key, value in acc.items():

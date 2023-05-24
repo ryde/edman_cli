@@ -1,5 +1,4 @@
 def main():
-
     import argparse
     import signal
     import sys
@@ -19,7 +18,8 @@ def main():
                         help='Dir of report files. default is current dir.',
                         default=None)
     parser.add_argument('-s', '--structure', default='ref',
-                        help='Select ref(Reference, default) or emb(embedded).')
+                        help=('Select ref(Reference, default) '
+                              'or emb(embedded).'))
     parser.add_argument('-i', '--inifile', help='DB connect file path.')
 
     # 引数を付けなかった場合はヘルプを表示して終了する
@@ -65,6 +65,7 @@ def main():
         tb = sys.exc_info()[2]
         sys.stderr.write(f'{type(e).__name__}: {e.with_traceback(tb)}\n')
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

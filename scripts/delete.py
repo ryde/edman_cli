@@ -44,5 +44,6 @@ def main():
         sys.stderr.write(f'{type(e).__name__}: {e.with_traceback(tb)}\n')
         sys.exit(1)
 
+
 if __name__ == "__main__":
     main()

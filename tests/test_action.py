@@ -239,7 +239,6 @@ class TestAction(TestCase):
                 'options': ['authMechanism=PLAIN']}
             self.assertDictEqual(actual_db, expected_db)
 
-
     @skipIf(import_flag is False, 'There is no action.py')
     def test_is_duplicate_filename(self):
 
