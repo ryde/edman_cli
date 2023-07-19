@@ -85,6 +85,10 @@ Licence
 -------
 MIT
 
+PyPI Project
+------------
+https://pypi.org/project/edman_cli/
+
 Author
 ------
 
