@@ -18,12 +18,12 @@ classifiers = [
     "Topic :: Database :: Front-Ends",
 ]
 dependencies = [
-    "pymongo~=4.3.3",
+    "pymongo~=4.4.1",
     " python-dateutil~=2.8.2",
     "jmespath~=1.0.1",
-    "edman~=2023.5.24",
+    "edman~=2023.7.19",
 ]
-version = "2023.5.24"
+version = "2023.7.19"
 
 [project.urls]
 "repository" = "https://github.com/ryde/edman_cli"
