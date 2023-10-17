@@ -9,6 +9,7 @@ cryptography==41.0.4
 dnspython==2.4.2
 docutils==0.20.1
 edman==2023.10.13
+edman-cli==2023.10.13
 flake8==6.1.0
 h11==0.14.0
 httpcore==1.0.0
