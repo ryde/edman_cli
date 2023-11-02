@@ -3,12 +3,12 @@ bleach==6.1.0
 build==1.0.3
 certifi==2023.7.22
 cffi==1.16.0
-charset-normalizer==3.3.1
+charset-normalizer==3.3.2
 commonmark==0.9.1
 cryptography==41.0.5
 dnspython==2.4.2
 docutils==0.20.1
-edman==2023.10.13
+edman==2023.11.2
 edman-cli==2023.10.13
 flake8==6.1.0
 h11==0.14.0
@@ -33,7 +33,7 @@ pycodestyle==2.11.1
 pycparser==2.21
 pyflakes==3.1.0
 Pygments==2.16.1
-pymongo==4.5.0
+pymongo==4.6.0
 pyproject_hooks==1.0.0
 python-dateutil==2.8.2
 readme-renderer==42.0
