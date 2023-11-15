@@ -92,7 +92,7 @@ Scripts Usage
       }
 
 | 以下のedmanのドキュメントも参照してください
-| https://github.com/ryde/edman#json-format
+| https://github.com/ryde/edman#type-conversion
 
 |
 |  ◯各コマンド
