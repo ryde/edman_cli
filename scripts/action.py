@@ -55,7 +55,8 @@ class Action:
                 yield read_data
 
     @staticmethod
-    def files_read(file_or_dir_path: Union[str, Path], suffix=None) -> tuple[Path,...]:
+    def files_read(file_or_dir_path: Union[str, Path], suffix=None) -> (
+            tuple)[Path, ...]:
         """
         ファイルのパスを、
         単一ファイルもディレクトリ内の複数ファイルもタプルにして返す
