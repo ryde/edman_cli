@@ -45,10 +45,10 @@ def main():
         query = Action.file_query_eval(args.query, structure)
 
         # データを作成
-        files = [(file, False) for file in Action.files_read(args.path)]
+        files = Action.files_read(args.path)
 
         # ファイルのアップロード
-        if file.upload(collection, args.objectid, tuple(files), structure,
+        if file.upload(collection, args.objectid, files, structure,
                        query):
             print('更新しました')
         else:
