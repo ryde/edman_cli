@@ -23,7 +23,7 @@ dependencies = [
     "jmespath~=1.0.1",
     "edman~=2023.11.17",
 ]
-version = "2023.11.17"
+version = "2023.11.20"
 
 [project.urls]
 "repository" = "https://github.com/ryde/edman_cli"
