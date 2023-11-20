@@ -114,6 +114,32 @@ Scripts Usage
 
   command_name -h
 
+CONFIG FILE
+-----------
+各スクリプトからDBに接続するためには、DBの接続情報が書かれたファイルが必要です
+
+::
+
+[DB]
+# MongoDB default port 27017
+port = 27017
+
+# MongoDB server host
+host = 127.0.0.1
+
+user = user_name
+password = user_password
+database = database_name
+options = ["authSource=authenticate_database_name"]
+# LDAP USER SETTINGS
+# options = ["authMechanism=PLAIN"]
+
+上記の内容のファイル、db.iniを作成し、任意の場所に保存してください
+DB内にユーザの情報がある場合はauthenticate_database_nameにDBの認証ユーザ名を、
+LDAPにユーザ情報がある場合はoptions = ["authMechanism=PLAIN"]を利用してください
+
+各スクリプトのヘルプを参考にして、引数にこのファイルのパスを指定してください
+
 Install
 -------
 
