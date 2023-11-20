@@ -120,19 +120,19 @@ CONFIG FILE
 
 ::
 
-[DB]
-# MongoDB default port 27017
-port = 27017
+    [DB]
+    # MongoDB default port 27017
+    port = 27017
 
-# MongoDB server host
-host = 127.0.0.1
+    # MongoDB server host
+    host = 127.0.0.1
 
-user = user_name
-password = user_password
-database = database_name
-options = ["authSource=authenticate_database_name"]
-# LDAP USER SETTINGS
-# options = ["authMechanism=PLAIN"]
+    user = user_name
+    password = user_password
+    database = database_name
+    options = ["authSource=authenticate_database_name"]
+    # LDAP USER SETTINGS
+    # options = ["authMechanism=PLAIN"]
 
 上記の内容のファイル、db.iniを作成し、任意の場所に保存してください
 DB内にユーザの情報がある場合はauthenticate_database_nameにDBの認証ユーザ名を、
