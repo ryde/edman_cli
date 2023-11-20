@@ -135,8 +135,11 @@ CONFIG FILE
     # options = ["authMechanism=PLAIN"]
 
 上記の内容のファイル、db.iniを作成し、任意の場所に保存してください
-DB内にユーザの情報がある場合はauthenticate_database_nameにDBの認証ユーザ名を、
-LDAPにユーザ情報がある場合はoptions = ["authMechanism=PLAIN"]を利用してください
+
+DB内にユーザの情報がある場合はauthSourceのauthenticate_database_nameに
+DBの認証ユーザ名を、
+LDAPにユーザ情報がある場合は"authMechanism=PLAIN"を利用してください
+(上記例はLDAPの場合)
 
 各スクリプトのヘルプを参考にして、引数にこのファイルのパスを指定してください
 
