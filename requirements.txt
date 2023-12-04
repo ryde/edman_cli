@@ -8,7 +8,7 @@ commonmark==0.9.1
 cryptography==41.0.7
 dnspython==2.4.2
 docutils==0.20.1
-edman==2023.11.29
+edman==2023.12.4
 edman-cli==2023.11.29
 flake8==6.1.0
 h11==0.14.0
