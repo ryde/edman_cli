@@ -21,9 +21,9 @@ dependencies = [
     "pymongo~=4.6.1",
     "python-dateutil~=2.8.2",
     "jmespath~=1.0.1",
-    "edman~=2023.11.29",
+    "edman~=2023.12.4",
 ]
-version = "2023.11.29"
+version = "2023.12.6"
 
 [project.urls]
 "repository" = "https://github.com/ryde/edman_cli"
