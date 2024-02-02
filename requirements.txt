@@ -1,12 +1,12 @@
 build==1.0.3
-certifi==2023.11.17
+certifi==2024.2.2
 cffi==1.16.0
 charset-normalizer==3.3.2
-cryptography==42.0.1
+cryptography==42.0.2
 dnspython==2.5.0
 docutils==0.20.1
-edman==2024.1.30
-edman_cli==2024.1.17
+edman==2024.2.2.2
+edman_cli==2024.1.30
 flake8==7.0.0
 idna==3.6
 importlib-metadata==7.0.1
@@ -40,5 +40,5 @@ SecretStorage==3.3.3
 six==1.16.0
 twine==4.0.2
 typing_extensions==4.9.0
-urllib3==2.1.0
+urllib3==2.2.0
 zipp==3.17.0
