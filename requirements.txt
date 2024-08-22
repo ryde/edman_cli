@@ -6,7 +6,7 @@ charset-normalizer==3.3.2
 cryptography==43.0.0
 dnspython==2.6.1
 docutils==0.21.2
-edman==2024.7.3.1
+edman==2024.8.21
 edman_cli==2024.7.3
 flake8==7.1.1
 idna==3.7
